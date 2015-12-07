@@ -42,7 +42,6 @@ $(function(){
 
   // Function to get lat/long based on these data objects using openCageData
   var getLatLong = function(obj, apiKey) {
-    console.log('apiKey', apiKey)
     var q = encodeURI(obj.city + ',' + obj.state + ', United States')
     
     // Return a promise in order to wait for all requests to finish
@@ -50,10 +49,11 @@ $(function(){
         url:'http://api.opencagedata.com/geocode/v1/json?q=' + q + '&key=' + apiKey,
         type: "get",
         success:function(response) {
-          console.log('get lat lng ', q)
+
+          // Set lat/lng of each data-point
           if(response.results == undefined) return
-           obj.lat = response.results[0].geometry.lat
-           obj.lng = response.results[0].geometry.lng
+          obj.lat = response.results[0].geometry.lat
+          obj.lng = response.results[0].geometry.lng
         }, 
         error:function(error) {
           console.log('error ', error)
@@ -79,7 +79,7 @@ $(function(){
 
       // Change button
       $('#download').find('span').css('display', 'none')
-      $('#download').find('text').text('Downloading...')
+      $('#download').find('text').text('Download')
       
     }
   
@@ -88,10 +88,12 @@ $(function(){
       
       // Change button
       $('#download').find('span').css('display', 'inline')      
-      $('#download').find('text').text('Download')
+      $('#download').find('text').text('Calculating lat/lng...')
 
       // Get api key
-      var apiKey = $(this).find('input').val()
+      var input = $(this).find('input')      
+      var apiKey = input.val()
+      input.val('')
       getData(apiKey)
       return false
   })
